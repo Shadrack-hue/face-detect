@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-Time Face Detection | Vercel Deployment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Inter, system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .container {
+            position: relative;
+            width: min(900px, 95vw);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5), 0 0 80px rgba(59,130,246,0.15);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        video {
+            width: 100%;
+            display: block;
+            transform: scaleX(-1);
+            background: #000;
+        }
+        canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transform: scaleX(-1);
+        }
+        .status {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 10;
+            background: rgba(15,23,42,0.85);
+            backdrop-filter: blur(10px);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+        }
+        .title {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            z-index: 10;
+            background: rgba(15,23,42,0.85);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .loading { color: #38bdf8; }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="status" id="status">Loading system...</div>
+      <div class="title">AI Face Detection <sup>(by EngShadrack)</sup></div>
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <!-- MediaPipe scripts optimized for browser compatibility and Vercel -->
+    <script src="https://jsdelivr.net" crossorigin="anonymous"></script>
+    <script src="https://jsdelivr.net" crossorigin="anonymous"></script>
+
+    <script>
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const statusBox = document.getElementById("status");
+
+        function setStatus(message, type = "loading") {
+            statusBox.className = `status ${type}`;
+            statusBox.textContent = message;
+            console.log(message);
+        }
+
+        async function initialize() {
+            try {
+                setStatus("Loading AI model...", "loading");
+                
+                // Stable model usage from JSDelivr CDN
+                const faceDetection = new FaceDetection({
+                    locateFile: (file) => `https://jsdelivr.net{file}`
+                });
+
+                faceDetection.setOptions({
+                    model: "short",
+                    minDetectionConfidence: 0.6
+                });
+
+                faceDetection.onResults(onResults);
+
+                setStatus("Requesting webcam access...", "loading");
+                
+                // Camera setup compatible with mobile and desktop
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        width: { ideal: 1280 }, 
+                        height: { ideal: 720 },
+                        facingMode: "user"
+                    }
+                });
+                
+                video.srcObject = stream;
+                
+                // Ensure video dimensions are fully loaded before rendering
+                await new Promise((resolve) => {
+                    video.onloadedmetadata = () => {
+                        adjustCanvasSize();
+                        resolve();
+                    };
+                });
+
+                await video.play();
+                setStatus("Webcam active. Detecting faces...", "success");
+
+                // Initialize MediaPipe Camera Loop
+                const camera = new Camera(video, {
+                    onFrame: async () => {
+                        await faceDetection.send({ image: video });
+                    },
+                    width: video.videoWidth,
+                    height: video.videoHeight
+                });
+                
+                camera.start();
+
+                // Adjust dimensions when window is resized
+                window.addEventListener('resize', adjustCanvasSize);
+
+            } catch (error) {
+                console.error("Attention:", error);
+                setStatus("Error: Webcam or AI model could not be initialized.", "error");
+            }
+        }
+
+        function adjustCanvasSize() {
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+        }
+
+        function onResults(results) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (!results.detections || results.detections.length === 0) return;
+
+            results.detections.forEach((detection) => {
+                const box = detection.boundingBox;
+                
+                // Convert MediaPipe normalized coordinates (0 to 1) to actual canvas pixels
+                const x = (box.xCenter - box.width / 2) * canvas.width;
+                const y = (box.yCenter - box.height / 2) * canvas.height;
+                const width = box.width * canvas.width;
+                const height = box.height * canvas.height;
+
+                // Draw face bounding box
+                ctx.strokeStyle = "#00ff88";
+                ctx.lineWidth = 4;
+                ctx.strokeRect(x, y, width, height);
+
+                // Draw confidence score percentage
+                ctx.fillStyle = "#00ff88";
+                ctx.font = "bold 16px Inter, sans-serif";
+                const scorePercentage = (detection.score ? detection.score : detection.score) * 100;
+                ctx.fillText(
+                    `Face: ${scorePercentage.toFixed(0)}%`,
+                    x,
+                    y - 12
+                );
+            });
+        }
+
+        // Start initialization after full page load
+        window.addEventListener("load", initialize);
+    </script>
+</body>
+</html>
+gap:10px;
+}
+
+.brand h1{
+font-size:28px;
+}
+
+.brand p{
+font-size:14px;
+opacity:.8;
+}
+
+.actions{
+display:flex;
+gap:10px;
+}
+
+button{
+background:var(--primary);
+border:none;
+padding:10px 16px;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+}
+
+button:hover{
+opacity:.9;
+}
+
+.container{
+position:relative;
+overflow:hidden;
+border-radius:20px;
+border:1px solid var(--border);
+box-shadow:
+0 0 30px rgba(0,0,0,.4),
+0 0 80px rgba(56,189,248,.1);
+}
+
+video{
+width:100%;
+display:block;
+transform:scaleX(-1);
+background:black;
+}
+
+canvas{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+pointer-events:none;
+transform:scaleX(-1);
+}
+
+.panel{
+position:absolute;
+top:15px;
+left:15px;
+display:flex;
+flex-direction:column;
+gap:10px;
+z-index:10;
+}
+
+.card{
+background:rgba(2,6,23,.8);
+backdrop-filter:blur(10px);
+padding:10px 14px;
+border-radius:10px;
+border:1px solid var(--border);
+font-size:14px;
+}
+
+.footer{
+margin-top:15px;
+padding:20px;
+border-radius:15px;
+background:var(--card);
+border:1px solid var(--border);
+}
+
+.footer h3{
+margin-bottom:10px;
+}
+
+.footer p{
+line-height:1.6;
+}
+
+.status-loading{
+color:var(--primary);
+}
+
+.status-success{
+color:var(--success);
+}
+
+.status-error{
+color:var(--danger);
+}
+
+@media(max-width:768px){
+
+.brand h1{
+font-size:20px;
+}
+
+.footer{
+font-size:14px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="header">
+
+<div class="brand">
+<h1>AI Face Detection</h1>
+<p>Developed by Eng. Shadrack Favour</p>
+</div>
+
+<div class="actions">
+<button onclick="toggleFullscreen()">Fullscreen</button>
+</div>
+
+</div>
+
+<div class="container">
+
+<div class="panel">
+
+<div id="status" class="card status-loading">
+Loading AI...
+</div>
+
+<div id="faces" class="card">
+Faces: 0
+</div>
+
+<div id="fps" class="card">
+FPS: 0
+</div>
+
+</div>
+
+<video id="video" autoplay muted playsinline></video>
+<canvas id="canvas"></canvas>
+
+</div>
+
+<div class="footer">
+
+<h3>About</h3>
+
+<p>
+Real-Time AI Face Detection System built with MediaPipe AI.
+</p>
+
+<br>
+
+<p>
+<strong>Developer:</strong> Eng. Shadrack Favour
+</p>
+
+<p>
+<strong>Email:</strong> shadracfavour44@gmail.com
+</p>
+
+<p>
+<strong>Phone:</strong> +254 741 443 643
+</p>
+
+<p>
+<strong>LinkedIn:</strong>
+<a href="https://www.linkedin.com/in/shadrack-favour-80b284289"
+target="_blank"
+style="color:#38bdf8">
+View Profile
+</a>
+</p>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"></script>
+
+<script>
+
+const video=document.getElementById("video");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+const statusBox=document.getElementById("status");
+const facesBox=document.getElementById("faces");
+const fpsBox=document.getElementById("fps");
+
+let lastTime=performance.now();
+
+function setStatus(text,type){
+
+statusBox.className=`card status-${type}`;
+statusBox.innerText=text;
+
+}
+
+function toggleFullscreen(){
+
+if(!document.fullscreenElement){
+document.documentElement.requestFullscreen();
+}else{
+document.exitFullscreen();
+}
+
+}
+
+async function initialize(){
+
+try{
+
+setStatus("Loading AI Model...","loading");
+
+const detector=new FaceDetection({
+
+locateFile:file=>
+`https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`
+
+});
+
+detector.setOptions({
+
+model:"short",
+minDetectionConfidence:0.5
+
+});
+
+detector.onResults(results=>{
+
+ctx.clearRect(
+0,
+0,
+canvas.width,
+canvas.height
+);
+
+let count=0;
+
+if(results.detections){
+
+count=results.detections.length;
+
+results.detections.forEach(d=>{
+
+const b=d.boundingBox;
+
+ctx.strokeStyle="#00ff88";
+ctx.lineWidth=3;
+
+ctx.strokeRect(
+b.xCenter-b.width/2,
+b.yCenter-b.height/2,
+b.width,
+b.height
+);
+
+ctx.fillStyle="#00ff88";
+ctx.font="18px Arial";
+
+ctx.fillText(
+`${(d.score[0]*100).toFixed(1)}%`,
+b.xCenter-b.width/2,
+b.yCenter-b.height/2-10
+);
+
+});
+
+}
+
+facesBox.innerText=`Faces: ${count}`;
+
+const now=performance.now();
+const fps=Math.round(1000/(now-lastTime));
+lastTime=now;
+
+fpsBox.innerText=`FPS: ${fps}`;
+
+});
+
+setStatus(
+"Requesting Webcam Access...",
+"loading"
+);
+
+const stream=
+await navigator.mediaDevices.getUserMedia({
+
+video:{
+width:1280,
+height:720
+}
+
+});
+
+video.srcObject=stream;
+
+await video.play();
+
+canvas.width=video.videoWidth;
+canvas.height=video.videoHeight;
+
+const camera=new Camera(video,{
+
+onFrame:async()=>{
+
+await detector.send({
+image:video
+});
+
+},
+
+width:1280,
+height:720
+
+});
+
+camera.start();
+
+setStatus(
+"AI Running Successfully",
+"success"
+);
+
+}
+catch(err){
+
+console.error(err);
+
+setStatus(
+"Camera Access Failed",
+"error"
+);
+
+}
+
+}
+
+window.onload=initialize;
+
+</script>
+
+</body>
+</html>
