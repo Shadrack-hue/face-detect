@@ -2,7 +2,6 @@ import { createIcons, icons } from 'lucide';
 import { CameraManager } from './modules/cameraManager.js';
 import { FaceEngine } from './modules/faceEngine.js';
 import { UIManager } from './modules/uiManager.js';
-import './style.css';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize standard icons

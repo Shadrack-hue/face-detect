@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>AI Face Detection System | Eng. Shadrack Favour</title>
     <meta name="theme-color" content="#0f172a" />
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./src/style.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "lucide": "https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/esm/lucide.js",
+                "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/vision_bundle.mjs"
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="app-layout">
@@ -83,6 +91,6 @@
         <div id="toast-container"></div>
     </div>
     
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="./src/main.js"></script>
 </body>
 </html>
