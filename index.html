@@ -179,7 +179,7 @@
             <div class="panel">
                 <div id="status" class="card status-loading">Loading AI...</div>
                 <div id="faces" class="card">Faces: 0</div>
-                <div id="fps" class="card">FPS: 0</div>
+                <div id="fps" class="card">FPS/count: 0</div>
             </div>
 
             <video id="video" autoplay muted playsinline></video>
@@ -188,11 +188,11 @@
 
         <div class="footer">
             <h3>About</h3>
-            <p>Real-Time AI Face Detection System built with MediaPipe AI.</p>
+            <p>Real-Time AI Face Detection System developed by Shadrack.</p>
             <br />
             <p><strong>Developer:</strong> Eng. Shadrack Favour</p>
             <p><strong>Email:</strong> shadracfavour44@gmail.com</p>
-            <p><strong>Phone:</strong> +254 741 443 643</p>
+            <p><strong>Phone:</strong> +254 794 615 132</p>
             <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/shadrack-favour-80b284289" target="_blank">View Profile</a></p>
         </div>
     </div>
@@ -300,7 +300,7 @@
                 setStatus('AI Running Successfully', 'success');
             } catch (error) {
                 console.error(error);
-                setStatus('Error: Webcam or AI model could not be initialized.', 'error');
+                setStatus('Error: Webcam model could not be initialized.', 'error');
             }
         }
 
