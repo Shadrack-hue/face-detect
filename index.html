@@ -94,3 +94,36 @@
     <script type="module" src="./src/main.js"></script>
 </body>
 </html>
+            <div class="video-stage glass-panel">
+                <div class="video-container" id="video-container">
+                    <video id="video-stream" autoplay playsinline muted></video>
+                    <canvas id="render-canvas"></canvas>
+                    
+                    <!-- HUD Overlays -->
+                    <div id="hud-metrics" class="hud-panel">
+                        <div class="metric"><span class="label">Faces:</span> <span id="metric-faces">0</span></div>
+                        <div class="metric"><span class="label">FPS:</span> <span id="metric-fps">0</span></div>
+                        <div class="metric"><span class="label">Latency:</span> <span id="metric-ms">0</span>ms</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar: Gallery -->
+            <aside class="sidebar glass-panel gallery-sidebar">
+                <div class="section-title">Captures</div>
+                <div id="gallery-container" class="gallery-grid">
+                    <p class="empty-state text-muted">No images captured yet.</p>
+                </div>
+                <button id="btn-export-all" class="btn-secondary btn-full" style="display: none;">
+                    <i data-lucide="download"></i> Export All
+                </button>
+            </aside>
+        </main>
+        
+        <!-- Toast Notification Container -->
+        <div id="toast-container"></div>
+    </div>
+    
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>
