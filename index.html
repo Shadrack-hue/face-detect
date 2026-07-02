@@ -2,309 +2,86 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Real-Time Face Detection</title>
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
-    <style>
-        :root {
-            --bg: #0f172a;
-            --text: #e2e8f0;
-            --card: rgba(15, 23, 42, 0.9);
-            --border: rgba(255, 255, 255, 0.08);
-            --primary: #38bdf8;
-            --success: #4ade80;
-            --danger: #f87171;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Inter, system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .app {
-            width: min(1000px, 95vw);
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            gap: 16px;
-        }
-
-        .brand h1 {
-            font-size: 28px;
-            margin-bottom: 6px;
-        }
-
-        .brand p {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            background: var(--primary);
-            border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            color: #0f172a;
-        }
-
-        button:hover {
-            opacity: 0.92;
-        }
-
-        .container {
-            position: relative;
-            overflow: hidden;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 80px rgba(56, 189, 248, 0.12);
-            background: #050914;
-        }
-
-        video {
-            width: 100%;
-            display: block;
-            transform: scaleX(-1);
-            background: #000;
-        }
-
-        canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            transform: scaleX(-1);
-        }
-
-        .panel {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 10;
-        }
-
-        .card {
-            background: var(--card);
-            backdrop-filter: blur(10px);
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            font-size: 14px;
-        }
-
-        .footer {
-            margin-top: 16px;
-            padding: 18px;
-            border-radius: 18px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            line-height: 1.6;
-        }
-
-        .footer a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .status-loading {
-            color: var(--primary);
-        }
-
-        .status-success {
-            color: var(--success);
-        }
-
-        .status-error {
-            color: var(--danger);
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .brand h1 {
-                font-size: 22px;
-            }
-
-            .footer {
-                font-size: 14px;
-            }
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>AI Face Detection System | Eng. Shadrack Favour</title>
+    <meta name="theme-color" content="#0f172a" />
 </head>
 <body>
-    <div class="app">
-        <div class="header">
+    <div class="app-layout">
+        <!-- Header -->
+        <header class="glass-panel">
             <div class="brand">
-                <h1>AI Face Detection</h1>
-                <p>Developed by Eng. Shadrack Favour</p>
+                <h1>IntelStream AI</h1>
+                <p>Vision Core v2.0 &bull; Eng. Shadrack Favour</p>
             </div>
-            <div class="actions">
-                <button onclick="toggleFullscreen()">Fullscreen</button>
+            <div class="header-actions">
+                <button id="btn-fullscreen" class="btn-icon" title="Toggle Fullscreen">
+                    <i data-lucide="maximize"></i>
+                </button>
             </div>
-        </div>
+        </header>
 
-        <div class="container">
-            <div class="panel">
-                <div id="status" class="card status-loading">Loading AI...</div>
-                <div id="faces" class="card">Faces: 0</div>
-                <div id="fps" class="card">FPS/count: 0</div>
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Left Sidebar: Controls -->
+            <aside class="sidebar glass-panel">
+                <div class="section-title">Camera Controls</div>
+                <div class="control-grid">
+                    <button id="btn-toggle-ai" class="btn-primary active">
+                        <i data-lucide="cpu"></i> <span id="ai-status-text">AI Active</span>
+                    </button>
+                    <button id="btn-flip-cam" class="btn-secondary">
+                        <i data-lucide="switch-camera"></i> Flip
+                    </button>
+                    <button id="btn-capture" class="btn-secondary">
+                        <i data-lucide="camera"></i> Capture
+                    </button>
+                </div>
+                
+                <div class="settings-group">
+                    <label for="cam-select">Video Source</label>
+                    <select id="cam-select" class="select-input">
+                        <option value="">Detecting cameras...</option>
+                    </select>
+                </div>
+
+                <div class="settings-group">
+                    <label for="zoom-slider">Hardware Zoom</label>
+                    <input type="range" id="zoom-slider" min="1" max="3" step="0.1" value="1" disabled />
+                </div>
+            </aside>
+
+            <!-- Center: Video Stage -->
+            <div class="video-stage glass-panel">
+                <div class="video-container" id="video-container">
+                    <video id="video-stream" autoplay playsinline muted></video>
+                    <canvas id="render-canvas"></canvas>
+                    
+                    <!-- HUD Overlays -->
+                    <div id="hud-metrics" class="hud-panel">
+                        <div class="metric"><span class="label">Faces:</span> <span id="metric-faces">0</span></div>
+                        <div class="metric"><span class="label">FPS:</span> <span id="metric-fps">0</span></div>
+                        <div class="metric"><span class="label">Latency:</span> <span id="metric-ms">0</span>ms</div>
+                    </div>
+                </div>
             </div>
 
-            <video id="video" autoplay muted playsinline></video>
-            <canvas id="canvas"></canvas>
-        </div>
-
-        <div class="footer">
-            <h3>About</h3>
-            <p>Real-Time AI Face Detection System developed by Shadrack.</p>
-            <br />
-            <p><strong>Developer:</strong> Eng. Shadrack Favour</p>
-            <p><strong>Email:</strong> shadracfavour44@gmail.com</p>
-            <p><strong>Phone:</strong> +254 794 615 132</p>
-            <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/shadrack-favour-80b284289" target="_blank">View Profile</a></p>
-        </div>
+            <!-- Right Sidebar: Gallery -->
+            <aside class="sidebar glass-panel gallery-sidebar">
+                <div class="section-title">Captures</div>
+                <div id="gallery-container" class="gallery-grid">
+                    <p class="empty-state text-muted">No images captured yet.</p>
+                </div>
+                <button id="btn-export-all" class="btn-secondary btn-full" style="display: none;">
+                    <i data-lucide="download"></i> Export All
+                </button>
+            </aside>
+        </main>
+        
+        <!-- Toast Notification Container -->
+        <div id="toast-container"></div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"></script>
-    <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const statusBox = document.getElementById('status');
-        const facesBox = document.getElementById('faces');
-        const fpsBox = document.getElementById('fps');
-
-        let lastTime = performance.now();
-
-        function setStatus(text, type) {
-            statusBox.className = `card status-${type}`;
-            statusBox.innerText = text;
-        }
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        function adjustCanvasSize() {
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
-        }
-
-        function onResults(results) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            let count = 0;
-            if (results.detections && results.detections.length) {
-                count = results.detections.length;
-                results.detections.forEach((detection) => {
-                    const b = detection.boundingBox;
-                    const x = b.xCenter - b.width / 2;
-                    const y = b.yCenter - b.height / 2;
-                    const width = b.width;
-                    const height = b.height;
-
-                    ctx.strokeStyle = '#00ff88';
-                    ctx.lineWidth = 3;
-                    ctx.strokeRect(x, y, width, height);
-
-                    const score = Array.isArray(detection.score) ? detection.score[0] : detection.score || 0;
-                    ctx.fillStyle = '#00ff88';
-                    ctx.font = '18px Arial';
-                    ctx.fillText(`${(score * 100).toFixed(1)}%`, x, y - 10);
-                });
-            }
-
-            facesBox.innerText = `Faces: ${count}`;
-            const now = performance.now();
-            const fps = Math.round(1000 / (now - lastTime));
-            lastTime = now;
-            fpsBox.innerText = `FPS: ${fps}`;
-        }
-
-        async function initialize() {
-            try {
-                setStatus('Loading AI model...', 'loading');
-
-                const detector = new FaceDetection({
-                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`,
-                });
-
-                detector.setOptions({
-                    model: 'short',
-                    minDetectionConfidence: 0.5,
-                });
-
-                detector.onResults(onResults);
-
-                setStatus('Requesting webcam access...', 'loading');
-
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 },
-                        facingMode: 'user',
-                    },
-                });
-
-                video.srcObject = stream;
-                await video.play();
-                adjustCanvasSize();
-                window.addEventListener('resize', adjustCanvasSize);
-
-                const camera = new Camera(video, {
-                    onFrame: async () => {
-                        await detector.send({ image: video });
-                    },
-                    width: video.videoWidth,
-                    height: video.videoHeight,
-                });
-
-                camera.start();
-                setStatus('AI Running Successfully', 'success');
-            } catch (error) {
-                console.error(error);
-                setStatus('Error: Webcam model could not be initialized.', 'error');
-            }
-        }
-
-        window.addEventListener('load', initialize);
-    </script>
+    
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>
