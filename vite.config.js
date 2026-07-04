@@ -7,7 +7,7 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    minify: 'terser',
+    minify: 'esbuild',
     outDir: 'dist'
   }
 });
