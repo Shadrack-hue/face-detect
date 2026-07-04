@@ -61,7 +61,7 @@ header {
 
 .brand p {
     font-size: 0.85rem;
-    color: var(--text-muted);
+    color: transparent;
     margin-top: 4px;
     background: linear-gradient(45deg, #ff007f, #7f00ff);
     -webkit-background-clip: text;
