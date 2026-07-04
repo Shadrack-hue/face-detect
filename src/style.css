@@ -63,7 +63,7 @@ header {
     font-size: 0.85rem;
     color: transparent;
     margin-top: 4px;
-    background: linear-gradient(135deg, #ff007f, #ff00ff, #9d00ff);
+    background: linear-gradient(to right, #fff, var(--primary));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
