@@ -60,10 +60,10 @@ header {
 }
 
 .brand p {
-    font-size: 0.95rem;
-    font-weight: 300;
+    font-size: 1rem;
+    font-weight: 500;
     letter-spacing: -0.5px;
-    background: linear-gradient(to right, #ff007f, #ff00ff, #9d00ff);
+    background: linear-gradient(to right, #ff007f, #ff00ff, #9d00ff, var(--primary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
